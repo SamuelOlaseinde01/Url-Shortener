@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { BadRequestError, NotFoundError } = require("../errors");
 
 async function optionalAuthMiddleware(req, res, next) {
-  const token = req.cookies.token;
+  const token = req.cookies?.token;
 
   if (token) {
     try {

@@ -9,7 +9,8 @@ const UrlSchema = new mongoose.Schema(
     },
     originalUrl: {
       type: String,
-      required: [true, "The original url must be provided!"],
+      minlength: 3,
+      required: [true, "You must provide a link"],
     },
     urlClickCount: {
       type: Number,

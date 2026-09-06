@@ -14,7 +14,7 @@ async function getAllUrls(req, res) {
 
 async function createUrl(req, res) {
   const { originalUrl } = req.body;
-  const { user_id } = req.user;
+  const user_id = req?.user?.user_id;
   const alphabet =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const nanoid = customAlphabet(alphabet, 7);
@@ -28,7 +28,7 @@ async function createUrl(req, res) {
     shortenedUrl: shortUrl,
     user: user_id,
   });
-  res.status(200).json({ newUrl });
+  res.status(200).json(newUrl);
 }
 
 async function getUrl(req, res) {
