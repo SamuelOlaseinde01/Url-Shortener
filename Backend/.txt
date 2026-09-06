@@ -1,0 +1,16 @@
+{
+  _id: ObjectId("..."),
+  shortCode: "abc123",
+  originalUrl: "https://example.com/some/long/page",
+  createdAt: ISODate("2026-08-08T00:00:00Z"),
+  clickCount: 0,
+  expiresAt: ISODate("2026-09-08T00:00:00Z"), // optional
+  createdBy: "user123" // optional, if you add accounts later
+}
+class Solution(object):
+    def searchInsert(self, nums, target):
+        for i, num in enumerate(nums):
+            if num == target:
+                return i
+            elif i + 1 < len(nums) and target > num and target > nums[i + 1] > num:
+                return i + 1
