@@ -125,3 +125,13 @@ body {
   text-shadow: 0 2px 5px rgba(220, 38, 38, 0.4);
   line-height: 1.25;
 }
+
+.shortened-link-container {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.shortened-link-container > svg {
+  margin-left: 2px;
+}
