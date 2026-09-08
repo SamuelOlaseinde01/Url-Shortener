@@ -114,3 +114,14 @@ body {
   border: none;
   transition: 300ms;
 }
+
+.error-text {
+  color: #dc2626; /* Clear accessible red */
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  margin-top: 0.275rem; /* 6px spacing below input */
+  margin-bottom: 0;
+  margin-left: 5px;
+  text-shadow: 0 2px 5px rgba(220, 38, 38, 0.4);
+  line-height: 1.25;
+}
