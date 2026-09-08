@@ -7,10 +7,14 @@ const UrlSchema = new mongoose.Schema(
       required: [true, "A shortened url must be provided!"],
       unique: true,
     },
+    shortID: {
+      type: String,
+      unique: true,
+    },
     originalUrl: {
       type: String,
       minlength: 3,
-      required: [true, "You must provide a link"],
+      required: [true, "You must provide a link."],
     },
     urlClickCount: {
       type: Number,
