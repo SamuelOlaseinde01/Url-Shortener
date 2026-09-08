@@ -13,8 +13,12 @@ const UrlSchema = new mongoose.Schema(
     },
     originalUrl: {
       type: String,
-      minlength: 3,
+      maxlength: [
+        2048,
+        "URL is too long. Browsers do not support URLs over 2048 characters.",
+      ],
       required: [true, "You must provide a link."],
+      trim: true,
     },
     urlClickCount: {
       type: Number,
