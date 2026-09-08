@@ -3,6 +3,7 @@ const {
   NotFoundError,
   UnAuthorizedError,
   DuplicateData,
+  BadRequestError,
 } = require("../errors");
 const Url = require("../models/url");
 
@@ -14,11 +15,18 @@ async function getAllUrls(req, res) {
 
 async function createUrl(req, res) {
   const { originalUrl } = req.body;
-  const user_id = req?.user?.user_id;
+  if (!originalUrl) {
+    throw new BadRequestError("This field is required", "url");
+  }
   const alphabet =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const customID = customAlphabet(alphabet, 9);
+  const shortID = customID();
+
+  const user_id = req?.user?.user_id;
   const nanoid = customAlphabet(alphabet, 7);
   const shortUrl = nanoid();
+
   const duplicateUrl = await Url.findOne({ shortenedUrl: shortUrl });
   if (duplicateUrl) {
     throw new DuplicateData("This url already exists", "createUrl");
@@ -35,7 +43,7 @@ async function getUrl(req, res) {
   const { id } = req.params;
   const url = await Url.findById(id);
   if (!url) {
-    throw new NotFoundError("This url does not exist");
+    throw new NotFoundError("This url does not exist.");
   }
   res.status(200).json({ url });
 }
@@ -44,9 +52,9 @@ async function deleteUrl(req, res) {
   const { id } = req.params;
   const url = await Url.findByIdAndDelete(id);
   if (!url) {
-    throw new NotFoundError("This url does not exist");
+    throw new NotFoundError("This url does not exist.");
   }
-  res.status(200).json({ msg: "This url has been deleted successfully" });
+  res.status(200).json({ msg: "This url has been deleted successfully." });
 }
 
 module.exports = {
