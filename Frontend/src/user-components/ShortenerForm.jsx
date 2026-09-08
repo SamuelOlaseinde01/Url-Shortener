@@ -2,11 +2,14 @@ import React from "react";
 import { Form } from "react-router";
 import { Copy, Check } from "lucide-react";
 
-export default function ShortenerForm(props) {
+export default function ShortenerForm({ newUrl, navigation }) {
   const [isCopied, setIsCopied] = React.useState(false);
-  const [errMessage, setErrMessage] = React.useState(props.newUrl?.message);
-  const shortenedUrl = props.newUrl?.shortenedUrl;
-  const navigation = props.navigation;
+  const [copyError, setCopyError] = React.useState(null);
+
+  const serverError = newUrl?.message;
+  const shortenedUrl = newUrl?.shortenedUrl;
+
+  const activeErrorMessage = copyError || serverError;
 
   async function handleCopy() {
     try {
@@ -16,7 +19,7 @@ export default function ShortenerForm(props) {
         setIsCopied(false);
       }, 2000);
     } catch (error) {
-      setErrMessage(error.message);
+      setCopyError(error.message);
     }
   }
 
@@ -32,7 +35,9 @@ export default function ShortenerForm(props) {
           placeholder="Enter the link here"
           required
         />
-        {errMessage && <p className="error-text">{errMessage}</p>}
+        {activeErrorMessage && (
+          <p className="error-text">{activeErrorMessage}</p>
+        )}
         <button
           className={
             navigation.state === "submitting"
