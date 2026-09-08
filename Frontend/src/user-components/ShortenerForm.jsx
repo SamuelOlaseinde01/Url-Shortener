@@ -1,10 +1,25 @@
 import React from "react";
 import { Form } from "react-router";
+import { Copy, Check } from "lucide-react";
 
 export default function ShortenerForm(props) {
+  const [isCopied, setIsCopied] = React.useState(false);
+  const [errMessage, setErrMessage] = React.useState(props.newUrl?.message);
   const shortenedUrl = props.newUrl?.shortenedUrl;
   const navigation = props.navigation;
-  const message = props.newUrl?.message;
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(shortenedUrl);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    } catch (error) {
+      setErrMessage(error.message);
+    }
+  }
+
   return (
     <div className="url-form-container">
       <div className="url-heading-container">
@@ -17,7 +32,7 @@ export default function ShortenerForm(props) {
           placeholder="Enter the link here"
           required
         />
-        {message && <p className="error-text">{message}</p>}
+        {errMessage && <p className="error-text">{errMessage}</p>}
         <button
           className={
             navigation.state === "submitting"
@@ -29,11 +44,21 @@ export default function ShortenerForm(props) {
         </button>
       </Form>
       {shortenedUrl && (
-        <span>
-          Shortended Url:{" "}
+        <span className="shortened-link-container">
+          Shortended Url:
           <a href={shortenedUrl} target="_blank">
             {`http://localhost:3000/${shortenedUrl}`}
           </a>
+          {isCopied ? (
+            <Check color="blue" size={17} cursor={"pointer"} />
+          ) : (
+            <Copy
+              color="blue"
+              size={17}
+              cursor={"pointer"}
+              onClick={handleCopy}
+            />
+          )}
         </span>
       )}
     </div>
