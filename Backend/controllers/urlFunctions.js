@@ -18,12 +18,12 @@ async function createUrl(req, res) {
   if (!originalUrl) {
     throw new BadRequestError("This field is required", "url");
   }
-  const alphabet =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const customID = customAlphabet(alphabet, 9);
-  const shortID = customID();
 
   const user_id = req?.user?.user_id;
+  const shortID = req?.user?.shortID;
+
+  const alphabet =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const nanoid = customAlphabet(alphabet, 7);
   const shortUrl = nanoid();
 
@@ -32,16 +32,17 @@ async function createUrl(req, res) {
     throw new DuplicateData("This url already exists", "createUrl");
   }
   const newUrl = await Url.create({
-    originalUrl: originalUrl,
     shortenedUrl: shortUrl,
     user: user_id,
+    originalUrl,
+    shortID,
   });
   res.status(200).json(newUrl);
 }
 
 async function getUrl(req, res) {
   const { id } = req.params;
-  const url = await Url.findById(id);
+  const url = await Url.findOne({ shortID: id });
   if (!url) {
     throw new NotFoundError("This url does not exist.");
   }
