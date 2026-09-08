@@ -6,8 +6,8 @@ import {
   RouterProvider,
 } from "react-router";
 import Layout from "./Layout";
-import LinkDetailsPage from "./LinkDetailsPage";
-import HomePage, { action as homeAction } from "./HomePage";
+import LinkDetailsPage from "./user-components/LinkDetailsPage";
+import HomePage, { action as homeAction } from "./user-components/HomePage";
 import "./style.css";
 
 export default function App() {

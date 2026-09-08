@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet } from "react-router";
-import Profile from "./Profile";
+import Profile from "./user-components/Profile";
 
 export default function Layout({ isLoggedIn, user }) {
   return (
