@@ -22,22 +22,46 @@ async function createUrl(req, res) {
   const user_id = req?.user?.user_id;
   const shortID = req?.user?.shortID;
 
+  if (!user_id) {
+    const duplicateOriginalUrl = await Url.findOne({
+      originalUrl: originalUrl,
+      user: null,
+    });
+    if (duplicateOriginalUrl) {
+      return res.status(200).json(duplicateOriginalUrl);
+    }
+  }
   const alphabet =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const nanoid = customAlphabet(alphabet, 7);
-  const shortUrl = nanoid();
 
-  const duplicateUrl = await Url.findOne({ shortenedUrl: shortUrl });
-  if (duplicateUrl) {
-    throw new DuplicateData("This url already exists", "createUrl");
+  let shortUrl;
+  let isUnique = false;
+  let attempts = 0;
+
+  while (!isUnique && attempts < 5) {
+    shortUrl = nanoid();
+    const duplicateShortUrl = await Url.findOne({ shortenedUrl: shortUrl });
+
+    if (!duplicateShortUrl) {
+      isUnique = true;
+    }
+
+    attempts++;
   }
+
+  if (!isUnique) {
+    throw new Error("Server is busy generating links. Please try again.");
+  }
+
   const newUrl = await Url.create({
     shortenedUrl: shortUrl,
-    user: user_id,
+    user: user_id || null,
     originalUrl,
     shortID,
   });
-  res.status(200).json(newUrl);
+
+  res.status(201).json(newUrl);
 }
 
 async function getUrl(req, res) {
