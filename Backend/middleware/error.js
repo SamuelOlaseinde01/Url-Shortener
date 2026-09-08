@@ -4,9 +4,13 @@ async function errorHandlingMiddleWare(err, req, res, next) {
     msg: err.message,
     field: err.field,
   };
-  res
-    .status(customError.statusCode)
-    .json({ msg: customError.msg, field: customError.field });
+  if (err.name === "ValidationError") {
+    validationErrMsg = Object.values(err.errors)[0];
+    customError.msg = validationErrMsg?.message;
+    customError.field = validationErrMsg?.path;
+    customError.statusCode = 400;
+  }
+  res.status(customError.statusCode).json(customError);
 }
 
 module.exports = errorHandlingMiddleWare;
