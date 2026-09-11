@@ -26,12 +26,7 @@ async function requireAuthMiddleware(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const alphabet =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const customID = customAlphabet(alphabet, 9);
-    const shortID = customID();
     req.user = decoded;
-    req.user.shortID = shortID;
     next();
   } catch (error) {
     return res.status(401).json({ error: "Invalid or expired token." });
