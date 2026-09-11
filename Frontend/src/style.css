@@ -126,6 +126,17 @@ body {
   line-height: 1.25;
 }
 
+.success-text {
+  color: green; /* Clear accessible red */
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  margin-top: 0.275rem; /* 6px spacing below input */
+  margin-bottom: 0;
+  margin-left: 5px;
+  text-shadow: 0 2px 5px rgba(34, 223, 84, 0.4);
+  line-height: 1.25;
+}
+
 .shortened-link-container {
   display: flex;
   align-items: center;
@@ -205,7 +216,12 @@ body {
   outline: none;
 }
 
-.register-form-container > form > button {
+.input-error-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-submitting-btn {
   padding: 15px 30px;
   cursor: pointer;
   margin-top: 10px;
@@ -213,5 +229,59 @@ body {
   color: black;
   border: 1px solid rgb(147, 147, 147);
   border-radius: 16px;
-  /* width: fit-content; */
+}
+
+/* Login page */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form-container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 50px 100px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Core support for Safari */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+.login-form-container > form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-submit-btn {
+  padding: 15px 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: black;
+  color: white;
+  border: 1px solid rgb(147, 147, 147);
+  border-radius: 16px;
+  transition: 300ms;
+}
+
+.auth-submit-btn:hover {
+  padding: 15px 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(147, 147, 147);
+  border-radius: 16px;
 }
