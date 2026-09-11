@@ -21,7 +21,7 @@ async function requireAuthMiddleware(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
-    throw new BadRequestError("Authentication required. Please log in.");
+    throw new NotFoundError("Authentication required. Please log in.");
   }
 
   try {
@@ -29,7 +29,7 @@ async function requireAuthMiddleware(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid or expired token." });
+    throw new BadRequestError("Invalid or expired token.");
   }
 }
 
