@@ -51,8 +51,8 @@ async function createUrl(req, res) {
   }
 
   const user_id = req?.user?.user_id;
-  const shortID = req?.user?.shortID;
 
+  // This code checks for duplicate urls for guest users
   if (!user_id) {
     const duplicateOriginalUrl = await Url.findOne({
       originalUrl: originalUrl,
@@ -62,6 +62,7 @@ async function createUrl(req, res) {
       return res.status(200).json(duplicateOriginalUrl);
     }
   }
+
   const alphabet =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const nanoid = customAlphabet(alphabet, 7);
@@ -89,7 +90,6 @@ async function createUrl(req, res) {
     shortenedUrl: shortUrl,
     user: user_id || null,
     originalUrl,
-    shortID,
   });
 
   res.status(201).json(newUrl);
