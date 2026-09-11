@@ -1,4 +1,3 @@
-import React from "react";
 import ShortenerForm from "./ShortenerForm";
 import { useActionData, useNavigation } from "react-router";
 import { createUrl } from "./user-api";
