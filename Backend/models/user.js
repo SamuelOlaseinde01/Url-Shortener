@@ -20,12 +20,16 @@ const UserSchema = new mongoose.Schema(
       type: String,
       unique: [true, "Email already exists"],
       required: [true, "Please provide your email"],
+      match: [
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please fill a valid email address",
+      ],
       lowercase: true,
       trim: true,
     },
     password: {
       type: String,
-      minlength: 8,
+      minlength: [8, "Password must be at least 8 characters long"],
       required: [true, "Please provide your password"],
     },
   },

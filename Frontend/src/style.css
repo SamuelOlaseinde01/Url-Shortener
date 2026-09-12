@@ -126,6 +126,17 @@ body {
   line-height: 1.25;
 }
 
+.success-text {
+  color: green; /* Clear accessible red */
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  margin-top: 0.275rem; /* 6px spacing below input */
+  margin-bottom: 0;
+  margin-left: 5px;
+  text-shadow: 0 2px 5px rgba(34, 223, 84, 0.4);
+  line-height: 1.25;
+}
+
 .shortened-link-container {
   display: flex;
   align-items: center;
@@ -134,4 +145,171 @@ body {
 
 .shortened-link-container > svg {
   margin-left: 2px;
+}
+
+/* Register Page */
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-form-container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 50px 100px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Core support for Safari */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+.register-form-container > form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-container > input {
+  width: 400px;
+  height: 50px;
+  padding: 20px 30px;
+  font-size: 1em;
+  border: 1px solid rgb(188, 188, 188);
+  border-radius: 5px;
+}
+
+.input-container > svg {
+  position: absolute;
+  left: 7px;
+}
+
+.input-container > .lock {
+  position: absolute;
+  left: 7px;
+}
+
+.input-container > .eye {
+  position: absolute;
+  right: 7px;
+}
+
+.input-container input:focus {
+  outline: none;
+}
+
+.input-error-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-submitting-btn {
+  padding: 15px 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: transparent;
+  color: black;
+  border: 1px solid rgb(147, 147, 147);
+  border-radius: 16px;
+}
+
+/* Login page */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form-container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 50px 100px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+.login-form-container > form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-submit-btn {
+  padding: 15px 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: black;
+  color: white;
+  border: 1px solid rgb(147, 147, 147);
+  border-radius: 16px;
+  transition: 300ms;
+}
+
+.auth-submit-btn:hover {
+  padding: 15px 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(147, 147, 147);
+  border-radius: 16px;
+}
+
+.logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.logout-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  gap: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 30px;
+  background-color: white;
+}
+
+.logout-container > a {
+  background-color: transparent;
+  text-decoration: none;
+  padding: 5px 10px;
+  color: black;
+  border-radius: 1px;
+  border: 1px solid grey;
 }

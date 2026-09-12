@@ -26,11 +26,6 @@ async function register(req, res) {
 
   res.status(201).json({
     message: "User account created successfully",
-    user: {
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-    },
   });
 }
 
@@ -55,19 +50,30 @@ async function login(req, res) {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // Requires HTTPS in production
-    sameSite: "strict", // Protects against CSRF attacks
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000,
   });
 
   res.status(200).json({
-    message: "Logged in successfully",
-    user: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-    },
+    message: "Log in successfully",
   });
+}
+
+async function logout(req, res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax", // Match whatever you used when setting it
+  });
+
+  res.status(200).json({ msg: "Logged out successfully" });
+}
+
+async function getCurrentUser(req, res) {
+  const { user_id: id } = req.user;
+  const user = await User.findById(id).select("-password");
+  res.status(200).json(user);
 }
 
 async function getAllUsers(req, res) {
@@ -92,4 +98,6 @@ module.exports = {
   deleteAllUsers,
   getAllUsers,
   deleteUser,
+  getCurrentUser,
+  logout,
 };
