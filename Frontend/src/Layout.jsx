@@ -1,7 +1,12 @@
 import React from "react";
-import { Link, Outlet, useLoaderData } from "react-router";
-import Profile from "./user-components/Profile";
-import { getOptionalUser } from "./user-components/user-api";
+import { Link, Outlet, useLoaderData, redirect, Form } from "react-router";
+import { getOptionalUser, logoutUser } from "./user-components/user-api";
+import { LogOut } from "lucide-react";
+
+export async function action() {
+  await logoutUser();
+  return redirect("/logout");
+}
 
 export async function loader() {
   const user = await getOptionalUser();
@@ -10,7 +15,7 @@ export async function loader() {
 
 export default function Layout() {
   const user = useLoaderData();
-  console.log(user);
+
   return (
     <>
       <header>
@@ -24,7 +29,24 @@ export default function Layout() {
 
         {user ? (
           <nav>
-            <Profile />
+            <Form method="post">
+              <button
+                type="submit"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "inherit",
+                  fontFamily: "inherit",
+                  color: "inherit",
+                }}
+              >
+                <LogOut size={18} /> Logout
+              </button>
+            </Form>
           </nav>
         ) : (
           <nav className="nav-unregistered">
@@ -33,7 +55,7 @@ export default function Layout() {
           </nav>
         )}
       </header>
-      <Outlet />
+      <Outlet context={user} />
     </>
   );
 }

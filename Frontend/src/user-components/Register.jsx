@@ -1,6 +1,12 @@
 import React from "react";
-import { Eye, EyeClosed, EyeOff, Lock, Mail, User } from "lucide-react";
-import { Form, Link, useActionData, useNavigation } from "react-router";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import {
+  Form,
+  Link,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "react-router";
 import { register } from "./user-api";
 
 export async function action({ request }) {
@@ -22,8 +28,8 @@ export async function action({ request }) {
       email,
       password,
     };
-    const data = await register(creds);
-    return data;
+    await register(creds);
+    throw redirect("/login");
   } catch (error) {
     return error;
   }

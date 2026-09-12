@@ -285,3 +285,31 @@ body {
   border: 1px solid rgb(147, 147, 147);
   border-radius: 16px;
 }
+
+.logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.logout-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  gap: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 30px;
+  background-color: white;
+}
+
+.logout-container > a {
+  background-color: transparent;
+  text-decoration: none;
+  padding: 5px 10px;
+  color: black;
+  border-radius: 1px;
+  border: 1px solid grey;
+}
