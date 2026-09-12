@@ -59,6 +59,17 @@ async function login(req, res) {
     message: "Log in successfully",
   });
 }
+
+async function logout(req, res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax", // Match whatever you used when setting it
+  });
+
+  res.status(200).json({ msg: "Logged out successfully" });
+}
+
 async function getCurrentUser(req, res) {
   const { user_id: id } = req.user;
   const user = await User.findById(id).select("-password");
@@ -88,4 +99,5 @@ module.exports = {
   getAllUsers,
   deleteUser,
   getCurrentUser,
+  logout,
 };
