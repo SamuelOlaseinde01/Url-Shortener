@@ -5,6 +5,12 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Better than fixed 100vh */
+}
+
 header {
   display: flex;
   flex-direction: row;
@@ -17,8 +23,9 @@ header {
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   background-color: black;
   color: white;
-  position: fixed;
+  position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
 .nav-unregistered {
@@ -56,9 +63,17 @@ body {
 .component-container {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  gap: 30px;
+  padding: 30px;
+  margin-top: 50px;
+}
+
+.shortener-form {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .url-form-container {
@@ -122,7 +137,6 @@ body {
   margin-top: 0.275rem; /* 6px spacing below input */
   margin-bottom: 0;
   margin-left: 5px;
-  text-shadow: 0 2px 5px rgba(220, 38, 38, 0.4);
   line-height: 1.25;
 }
 
@@ -307,9 +321,64 @@ body {
 
 .logout-container > a {
   background-color: transparent;
-  text-decoration: none;
   padding: 5px 10px;
   color: black;
   border-radius: 1px;
-  border: 1px solid grey;
+}
+
+/* Link history */
+
+.link-card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  border-bottom: 1px solid rgb(219, 219, 219);
+  border-radius: 10px;
+}
+
+.links-logo-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.links-info > a {
+  font-size: 1.1em;
+}
+
+.links-info > p {
+  font-size: 0.9em;
+}
+
+.link-clicks {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.link-clicks > p {
+  display: flex;
+  gap: 3px;
+  cursor: pointer;
+  background-color: rgb(209, 209, 209);
+  padding: 10px;
+  color: black;
+  border-radius: 5px;
+}
+
+.link-clicks > a {
+  display: flex;
+  gap: 3px;
+  cursor: pointer;
+  background-color: black;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
 }
