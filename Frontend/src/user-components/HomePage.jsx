@@ -1,6 +1,21 @@
 import ShortenerForm from "./ShortenerForm";
-import { useActionData, useNavigation } from "react-router";
-import { createUrl } from "./user-api";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useOutletContext,
+} from "react-router";
+import { createUrl, getAllUrls } from "./user-api";
+import LinkHistory from "./LinkHistory";
+
+export async function loader() {
+  try {
+    const urls = await getAllUrls();
+    return urls;
+  } catch (err) {
+    return err;
+  }
+}
 
 export async function action({ request }) {
   try {
@@ -14,11 +29,14 @@ export async function action({ request }) {
 }
 
 export default function HomePage() {
+  const urls = useLoaderData();
+  const user = useOutletContext();
   const newUrl = useActionData();
   const navigation = useNavigation();
   return (
     <div className="component-container">
       <ShortenerForm newUrl={newUrl} navigation={navigation} />
+      {user || newUrl?._id ? <LinkHistory newUrl={newUrl} urls={urls} /> : null}
     </div>
   );
 }
