@@ -15,7 +15,6 @@ export async function action({ request }) {
     const email = formData.get("email");
     const password = formData.get("password");
     const creds = { email, password };
-    console.log(creds);
     await login(creds);
     throw redirect("/");
   } catch (err) {
@@ -27,6 +26,7 @@ export default function Login() {
   const navigation = useNavigation();
   const data = useActionData();
   const [isOpen, setIsOpen] = React.useState(true);
+  console.log(data);
 
   function handleEyeOpen() {
     setIsOpen(!isOpen);
