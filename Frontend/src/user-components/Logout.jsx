@@ -1,5 +1,5 @@
-import { LogOut } from "lucide-react";
 import React from "react";
+import { LogOut } from "lucide-react";
 import { Link } from "react-router";
 
 export default function Logout() {
