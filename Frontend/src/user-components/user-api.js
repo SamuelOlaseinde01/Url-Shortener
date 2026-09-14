@@ -30,7 +30,8 @@ export async function login(creds) {
     credentials: "include",
     body: JSON.stringify(creds),
   });
-  const data = res.json();
+  const data = await res.json();
+  console.log(data);
   if (!res.ok) {
     const error = new Error(
       data?.msg || "Something went wrong. Please try again."
@@ -90,6 +91,23 @@ export async function createUrl(originalUrl) {
     body: JSON.stringify(originalUrl),
   });
 
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(
+      data?.msg || "Something went wrong. Please try again."
+    );
+    error.field = data?.field;
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
+export async function getAllUrls() {
+  const res = await fetch("http://localhost:3000/api/v1/url", {
+    method: "GET",
+    credentials: "include",
+  });
   const data = await res.json();
   if (!res.ok) {
     const error = new Error(
