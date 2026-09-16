@@ -9,6 +9,7 @@ export default function LinkHistory({ urls, newUrl }) {
 
   const user = useOutletContext();
   let links;
+  console.log(urls);
   if (urls.length > 0) {
     links = urls.map((url) => {
       return <LinkCard key={url.shortID} url={url} />;

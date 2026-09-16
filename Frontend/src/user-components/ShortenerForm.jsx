@@ -6,8 +6,12 @@ export default function ShortenerForm({ newUrl, navigation }) {
   const [isCopied, setIsCopied] = React.useState(false);
   const [copyError, setCopyError] = React.useState(null);
 
+  console.log(newUrl);
+
   const serverError = newUrl?.message;
   const shortenedUrl = newUrl?.shortenedUrl;
+
+  console.log(serverError);
 
   const activeErrorMessage = copyError || serverError;
 

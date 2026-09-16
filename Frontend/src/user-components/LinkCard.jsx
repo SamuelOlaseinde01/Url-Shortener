@@ -8,8 +8,9 @@ export default function LinkCard({ url }) {
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(`
-http://localhost:3000/${url.shortenedUrl}`);
+      await navigator.clipboard.writeText(
+        `http://localhost:3000/${url.shortenedUrl}`
+      );
       setIsCopied(true);
       setTimeout(() => {
         setIsCopied(false);
