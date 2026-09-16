@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const { customAlphabet } = require("nanoid");
+const alphabet =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+const nanoid = customAlphabet(alphabet, 7);
 
 const UrlSchema = new mongoose.Schema(
   {
@@ -38,16 +42,12 @@ UrlSchema.index(
   { createdAt: 1 },
   {
     expireAfterSeconds: 2592000,
-    partialFilterExpression: { user: { $exists: false } },
+    partialFilterExpression: { user: null },
   }
 );
 
 UrlSchema.pre("save", async function () {
   if (this.isNew && this.user) {
-    const alphabet =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    const nanoid = customAlphabet(alphabet, 7);
     let attempts = 0;
     let isUnique = false;
     while (!isUnique && attempts < 5) {
@@ -64,9 +64,7 @@ UrlSchema.pre("save", async function () {
       attempts++;
     }
     if (!isUnique) {
-      return next(
-        new Error("Server busy: Could not generate a unique shortID.")
-      );
+      throw new Error("Server busy: Could not generate a unique shortID.");
     }
   }
 });
