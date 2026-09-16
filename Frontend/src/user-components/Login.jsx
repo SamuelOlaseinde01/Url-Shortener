@@ -7,7 +7,7 @@ import {
   useActionData,
   useNavigation,
 } from "react-router";
-import { login } from "./user-api";
+import { claimStoredGuestUrls, login } from "./user-api";
 
 export async function action({ request }) {
   try {
@@ -16,6 +16,7 @@ export async function action({ request }) {
     const password = formData.get("password");
     const creds = { email, password };
     await login(creds);
+    await claimStoredGuestUrls();
     throw redirect("/");
   } catch (err) {
     return err;
