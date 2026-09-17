@@ -27,7 +27,6 @@ export default function Login() {
   const navigation = useNavigation();
   const data = useActionData();
   const [isOpen, setIsOpen] = React.useState(true);
-  console.log(data);
 
   function handleEyeOpen() {
     setIsOpen(!isOpen);

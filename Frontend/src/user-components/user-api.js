@@ -123,8 +123,6 @@ export async function getAllUrls() {
 export async function claimStoredGuestUrls() {
   const storedIds = JSON.parse(sessionStorage.getItem("guest_links") || "[]");
 
-  console.log(storedIds);
-
   if (storedIds.length === 0) return;
 
   try {
