@@ -13,7 +13,9 @@ const nanoid = customAlphabet(alphabet, 7);
 
 async function getAllUrls(req, res) {
   const { user_id } = req.user;
-  const allUrls = await Url.find({ user: user_id });
+  const allUrls = await Url.find({ user: user_id }).sort({
+    createdAt: -1,
+  });
   res.status(200).json(allUrls);
 }
 
@@ -90,7 +92,7 @@ async function getUrl(req, res) {
   if (!url) {
     throw new NotFoundError("This url does not exist.");
   }
-  res.status(200).json({ url });
+  res.status(200).json(url);
 }
 
 async function deleteUrl(req, res) {
