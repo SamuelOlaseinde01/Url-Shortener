@@ -9,7 +9,9 @@ import Layout, {
   loader as layoutLoader,
   action as layoutAction,
 } from "./Layout";
-import LinkDetailsPage from "./user-components/LinkDetailsPage";
+import LinkDetailsPage, {
+  loader as linkDetailLoader,
+} from "./user-components/LinkDetailsPage";
 import HomePage, {
   loader as homeLoader,
   action as homeAction,
@@ -45,7 +47,7 @@ export default function App() {
           />
           <Route
             path="/:id"
-            loader={requireAuth}
+            loader={linkDetailLoader}
             element={<LinkDetailsPage />}
           />
         </Route>
