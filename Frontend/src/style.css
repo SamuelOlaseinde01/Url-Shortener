@@ -382,3 +382,22 @@ body {
   color: white;
   border-radius: 5px;
 }
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.stats > span {
+  display: flex;
+  gap: 5px;
+}
