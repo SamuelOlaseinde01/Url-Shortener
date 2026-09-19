@@ -17,7 +17,7 @@ export default function Layout() {
   const user = useLoaderData();
 
   return (
-    <>
+    <div className="layout">
       <header>
         {user ? (
           <h2 style={{ textTransform: "capitalize" }}>
@@ -56,6 +56,6 @@ export default function Layout() {
         )}
       </header>
       <Outlet context={user} />
-    </>
+    </div>
   );
 }

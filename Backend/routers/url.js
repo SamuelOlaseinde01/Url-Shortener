@@ -4,6 +4,7 @@ const {
   getAllUrls,
   createUrl,
   deleteUrl,
+  claimGuestUrls,
 } = require("../controllers/urlfunctions");
 const {
   requireAuthMiddleware,
@@ -20,5 +21,6 @@ router
   .route("/:id")
   .get(requireAuthMiddleware, getUrl)
   .delete(requireAuthMiddleware, deleteUrl);
+router.route("/claim").post(requireAuthMiddleware, claimGuestUrls);
 
 module.exports = router;

@@ -9,8 +9,13 @@ import Layout, {
   loader as layoutLoader,
   action as layoutAction,
 } from "./Layout";
-import LinkDetailsPage from "./user-components/LinkDetailsPage";
-import HomePage, { action as homeAction } from "./user-components/HomePage";
+import LinkDetailsPage, {
+  loader as linkDetailLoader,
+} from "./user-components/LinkDetailsPage";
+import HomePage, {
+  loader as homeLoader,
+  action as homeAction,
+} from "./user-components/HomePage";
 import "./style.css";
 import Login, { action as loginAction } from "./user-components/Login";
 import Register, { action as registerAction } from "./user-components/Register";
@@ -34,10 +39,15 @@ export default function App() {
           action={layoutAction}
           element={<Layout />}
         >
-          <Route index element={<HomePage />} action={homeAction} />
+          <Route
+            index
+            element={<HomePage />}
+            loader={homeLoader}
+            action={homeAction}
+          />
           <Route
             path="/:id"
-            loader={requireAuth}
+            loader={linkDetailLoader}
             element={<LinkDetailsPage />}
           />
         </Route>

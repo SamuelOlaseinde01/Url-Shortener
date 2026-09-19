@@ -7,10 +7,16 @@ const {
 } = require("../errors");
 const Url = require("../models/url");
 
+const alphabet =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const nanoid = customAlphabet(alphabet, 7);
+
 async function getAllUrls(req, res) {
   const { user_id } = req.user;
-  const allUrls = await Url.find({ user: user_id });
-  res.status(200).json({ allUrls });
+  const allUrls = await Url.find({ user: user_id }).sort({
+    createdAt: -1,
+  });
+  res.status(200).json(allUrls);
 }
 
 async function createUrl(req, res) {
@@ -52,21 +58,6 @@ async function createUrl(req, res) {
 
   const user_id = req?.user?.user_id;
 
-  // This code checks for duplicate urls for guest users
-  if (!user_id) {
-    const duplicateOriginalUrl = await Url.findOne({
-      originalUrl: originalUrl,
-      user: null,
-    });
-    if (duplicateOriginalUrl) {
-      return res.status(200).json(duplicateOriginalUrl);
-    }
-  }
-
-  const alphabet =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const nanoid = customAlphabet(alphabet, 7);
-
   let shortUrl;
   let isUnique = false;
   let attempts = 0;
@@ -101,7 +92,7 @@ async function getUrl(req, res) {
   if (!url) {
     throw new NotFoundError("This url does not exist.");
   }
-  res.status(200).json({ url });
+  res.status(200).json(url);
 }
 
 async function deleteUrl(req, res) {
@@ -113,9 +104,34 @@ async function deleteUrl(req, res) {
   res.status(200).json({ msg: "This url has been deleted successfully." });
 }
 
+async function claimGuestUrls(req, res) {
+  const { urlIds } = req.body;
+
+  if (!urlIds || !Array.isArray(urlIds) || urlIds.length === 0) {
+    return res.status(200).json({ msg: "No links to claim" });
+  }
+
+  // Update only URLs that belong to nobody (user is null/undefined)
+  const result = await Url.updateMany(
+    {
+      _id: { $in: urlIds },
+      user: null, // or user: null depending on schema
+    },
+    {
+      $set: { user: req.user.user_id },
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    claimedCount: result.modifiedCount,
+  });
+}
+
 module.exports = {
   getUrl,
   getAllUrls,
   createUrl,
   deleteUrl,
+  claimGuestUrls,
 };
