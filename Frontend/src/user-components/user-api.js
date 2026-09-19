@@ -140,3 +140,20 @@ export async function claimStoredGuestUrls() {
     console.error("Failed to claim guest links:", err);
   }
 }
+
+export async function getUrl(id) {
+  const res = await fetch(`http://localhost:3000/api/v1/url/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(
+      data?.msg || "Something went wrong. Please try again."
+    );
+    error.field = data?.field;
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
