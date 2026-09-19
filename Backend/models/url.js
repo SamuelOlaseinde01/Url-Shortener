@@ -47,25 +47,23 @@ UrlSchema.index(
 );
 
 UrlSchema.pre("save", async function () {
-  if (this.isNew && this.user) {
-    let attempts = 0;
-    let isUnique = false;
-    while (!isUnique && attempts < 5) {
-      const generatedID = nanoid();
-      const existingID = await this.constructor.findOne({
-        shortID: generatedID,
-      });
+  let attempts = 0;
+  let isUnique = false;
+  while (!isUnique && attempts < 5) {
+    const generatedID = nanoid();
+    const existingID = await this.constructor.findOne({
+      shortID: generatedID,
+    });
 
-      if (!existingID) {
-        isUnique = true;
-        this.shortID = generatedID;
-      }
+    if (!existingID) {
+      isUnique = true;
+      this.shortID = generatedID;
+    }
 
-      attempts++;
-    }
-    if (!isUnique) {
-      throw new Error("Server busy: Could not generate a unique shortID.");
-    }
+    attempts++;
+  }
+  if (!isUnique) {
+    throw new Error("Server busy: Could not generate a unique shortID.");
   }
 });
 
