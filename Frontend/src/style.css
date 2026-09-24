@@ -100,9 +100,6 @@ body {
   padding: 10px;
   border: rgb(227, 227, 227) 1px solid;
 }
-.url-form > input:focus {
-  outline: none;
-}
 
 .url-form-container > a {
   color: blue;
@@ -224,10 +221,6 @@ body {
 .input-container > .eye {
   position: absolute;
   right: 7px;
-}
-
-.input-container input:focus {
-  outline: none;
 }
 
 .input-error-container {
@@ -381,6 +374,10 @@ body {
   text-decoration: none;
   color: white;
   border-radius: 5px;
+}
+
+input:focus {
+  outline: none;
 }
 
 .stats-container {
