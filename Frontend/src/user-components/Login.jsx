@@ -90,6 +90,7 @@ export default function Login() {
             )}
           </div>
           <button
+            disabled={navigation.state === "submitting"}
             className={
               navigation.state === "submitting"
                 ? "auth-submitting-btn"
