@@ -53,7 +53,8 @@ async function createUrl(req, res) {
 
 async function getUrl(req, res) {
   const { id } = req.params;
-  const url = await Url.findOne({ shortID: id });
+  const { user_id } = req.user;
+  const url = await Url.findOne({ shortID: id, user: user_id });
   if (!url) {
     throw new NotFoundError("This url does not exist.");
   }
@@ -62,9 +63,10 @@ async function getUrl(req, res) {
 
 async function editUrl(req, res) {
   const { id } = req.params;
+  const { user_id } = req.user;
   const { originalUrl } = req.body;
 
-  const exisitingUrl = await Url.findOne({ shortID: id });
+  const exisitingUrl = await Url.findOne({ shortID: id, user: user_id });
 
   if (!exisitingUrl) {
     throw new NotFoundError("Short URL not found");
@@ -76,16 +78,22 @@ async function editUrl(req, res) {
     );
   }
 
-  const url = await Url.findOneAndUpdate({ shortID: id }, { originalUrl });
+  exisitingUrl.originalUrl = originalUrl;
+
+  await exisitingUrl.save();
   res.status(200).json({ msg: "Url update successful" });
 }
 
 async function deleteUrl(req, res) {
   const { id } = req.params;
-  const url = await Url.findByIdAndDelete(id);
+  const { user_id } = req.user;
+
+  const url = await Url.findOneAndDelete({ shortID: id, user: user_id });
+
   if (!url) {
     throw new NotFoundError("This url does not exist.");
   }
+
   res.status(200).json({ msg: "This url has been deleted successfully." });
 }
 
