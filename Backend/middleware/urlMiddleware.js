@@ -53,7 +53,6 @@ async function urlMiddleware(req, res, next) {
 
     // --- NEW TLD VALIDATION CODE END ---
 
-    console.log(originalUrl);
     req.body.originalUrl = originalUrl;
     next();
   } catch (err) {

@@ -159,7 +159,6 @@ export async function getUrl(id) {
 }
 
 export async function editUrl(obj) {
-  console.log(obj);
   const res = await fetch(`http://localhost:3000/api/v1/url/${obj.id}`, {
     method: "PATCH",
     credentials: "include",

@@ -15,8 +15,6 @@ export default function LinkHistory({ urls, newUrl }) {
     });
   }
 
-  console.log(urls);
-
   return (
     <div>
       {newUrl?._id || urls.length > 0 ? <h3>Your Recent Links:</h3> : null}
