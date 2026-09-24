@@ -162,6 +162,7 @@ export default function Register() {
             )}
           </div>
           <button
+            disabled={navigation.state === "submitting"}
             className={
               navigation.state === "submitting"
                 ? "auth-submitting-btn"
