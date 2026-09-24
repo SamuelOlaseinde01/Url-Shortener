@@ -157,3 +157,42 @@ export async function getUrl(id) {
   }
   return data;
 }
+
+export async function editUrl(obj) {
+  const res = await fetch(`http://localhost:3000/api/v1/url/${obj.id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ originalUrl: obj.originalUrl }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(
+      data?.msg || "Something went wrong. Please try again."
+    );
+    error.field = data?.field;
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
+export async function deleteUrl(id) {
+  const res = await fetch(`http://localhost:3000/api/v1/url/${id}`, {
+    method: "delete",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(
+      data?.msg || "Something went wrong. Please try again."
+    );
+    error.field = data?.field;
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}

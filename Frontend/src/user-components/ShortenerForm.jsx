@@ -40,6 +40,7 @@ export default function ShortenerForm({ newUrl, navigation }) {
             <p className="error-text">{activeErrorMessage}</p>
           )}
           <button
+            disabled={navigation.state === "submitting"}
             className={
               navigation.state === "submitting"
                 ? "url-submitting-btn"

@@ -11,6 +11,7 @@ import Layout, {
 } from "./Layout";
 import LinkDetailsPage, {
   loader as linkDetailLoader,
+  action as linkDetailAction,
 } from "./user-components/LinkDetailsPage";
 import HomePage, {
   loader as homeLoader,
@@ -47,6 +48,7 @@ export default function App() {
           />
           <Route
             path="/:id"
+            action={linkDetailAction}
             loader={linkDetailLoader}
             element={<LinkDetailsPage />}
           />
