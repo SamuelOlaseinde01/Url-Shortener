@@ -177,3 +177,23 @@ export async function editUrl(obj) {
   }
   return data;
 }
+
+export async function deleteUrl(id) {
+  const res = await fetch(`http://localhost:3000/api/v1/url/${id}`, {
+    method: "delete",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(
+      data?.msg || "Something went wrong. Please try again."
+    );
+    error.field = data?.field;
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
