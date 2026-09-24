@@ -20,42 +20,7 @@ async function getAllUrls(req, res) {
 }
 
 async function createUrl(req, res) {
-  let { originalUrl } = req.body;
-  if (!originalUrl) {
-    throw new BadRequestError("This field is required", "url");
-  }
-
-  originalUrl = originalUrl.trim();
-
-  if (originalUrl.length < 11) {
-    throw new BadRequestError(
-      "URL is too short. It must be at least 11 characters.",
-      "url"
-    );
-  }
-
-  // 2. Structural parsing using native Node.js 'URL' class
-  try {
-    const parsedUrl = new URL(originalUrl);
-
-    // Block non-web protocols (e.g., javascript:, mailto:, ftp:)
-    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      throw new BadRequestError(
-        "URL must start with http:// or https://",
-        "url"
-      );
-    }
-
-    if (parsedUrl.hostname.length === 0) {
-      throw new BadRequestError("URL must contain a valid domain.", "url");
-    }
-  } catch (err) {
-    throw new BadRequestError(
-      "The provided string is not a valid URL structure.",
-      "url"
-    );
-  }
-
+  const { originalUrl } = req.body;
   const user_id = req?.user?.user_id;
 
   let shortUrl;
@@ -95,6 +60,26 @@ async function getUrl(req, res) {
   res.status(200).json(url);
 }
 
+async function editUrl(req, res) {
+  const { id } = req.params;
+  const { originalUrl } = req.body;
+
+  const exisitingUrl = await Url.findOne({ shortID: id });
+
+  if (!exisitingUrl) {
+    throw new NotFoundError("Short URL not found");
+  }
+
+  if (exisitingUrl.originalUrl === originalUrl) {
+    throw new DuplicateData(
+      "The new URL must be different from the current original URL."
+    );
+  }
+
+  const url = await Url.findOneAndUpdate({ shortID: id }, { originalUrl });
+  res.status(200).json({ msg: "Url update successful" });
+}
+
 async function deleteUrl(req, res) {
   const { id } = req.params;
   const url = await Url.findByIdAndDelete(id);
@@ -132,6 +117,7 @@ module.exports = {
   getUrl,
   getAllUrls,
   createUrl,
+  editUrl,
   deleteUrl,
   claimGuestUrls,
 };
