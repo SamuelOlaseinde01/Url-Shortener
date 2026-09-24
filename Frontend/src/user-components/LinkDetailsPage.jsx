@@ -1,5 +1,5 @@
 import React from "react";
-import { Check, Edit2, X } from "lucide-react";
+import { Check, Edit2, Trash, X } from "lucide-react";
 import {
   useLoaderData,
   redirect,
@@ -7,7 +7,7 @@ import {
   useActionData,
   useNavigation,
 } from "react-router";
-import { editUrl, getOptionalUser, getUrl } from "./user-api";
+import { deleteUrl, editUrl, getOptionalUser, getUrl } from "./user-api";
 
 export async function loader({ params }) {
   const user = await getOptionalUser();
@@ -26,7 +26,8 @@ export async function action({ request, params }) {
     const intent = formData.get("intent");
 
     if (intent === "delete") {
-      console.log("deleted");
+      await deleteUrl(id);
+      return redirect("/");
     }
 
     if (intent === "update") {
@@ -76,12 +77,6 @@ export default function LinkDetailsPage() {
     setOpenEdit(false); // Close the edit menu
   }
 
-  //if the url update is successful, close the open edit buttons
-  function closeEdit() {
-    setIsEditing(false);
-    setOpenEdit(false);
-  }
-
   const normalDateTime = url?.createdAt
     ? new Intl.DateTimeFormat("en-US", {
         dateStyle: "medium", // Gives you "Sep 17, 2026"
@@ -92,17 +87,20 @@ export default function LinkDetailsPage() {
   return (
     <div className="stats-container">
       <div className="buttons">
-        <Form method="post">
-          <input type="hidden" name="intent" value="delete" />
-          <input type="hidden" value={url?.shortID} name="id" />
-          <button disabled={isDeleting}>Delete</button>
-        </Form>
         <button
           disabled={isUpdating || isDeleting}
           onClick={() => setOpenEdit(!openEdit)}
         >
-          {openEdit ? "Cancel" : "Edit"}
+          {openEdit ? <X size={14} /> : <Edit2 size={12} />}
+          {openEdit ? " Cancel" : " Edit"}
         </button>
+        <Form method="post">
+          <input type="hidden" name="intent" value="delete" />
+          <input type="hidden" value={url?.shortID} name="id" />
+          <button disabled={isDeleting}>
+            <Trash size={13} /> Delete
+          </button>
+        </Form>
       </div>
 
       <div className="stats">
@@ -137,7 +135,7 @@ export default function LinkDetailsPage() {
               </button>
               <button
                 type="button"
-                onClick={closeEdit}
+                onClick={() => setIsEditing(false)}
                 aria-label="Cancel editing"
                 style={{
                   background: "none",
