@@ -53,8 +53,10 @@ export default function HomePage() {
 
   return (
     <div className="component-container">
-      <ShortenerForm newUrl={newUrl} navigation={navigation} />
-      {user || hasNewLink ? <LinkHistory newUrl={newUrl} urls={urls} /> : null}
+      <ShortenerForm newUrl={newUrl} navigation={navigation} user={user} />
+      {user || hasNewLink || (urls && urls.length > 0) ? (
+        <LinkHistory newUrl={newUrl} urls={urls} />
+      ) : null}
     </div>
   );
 }
