@@ -1,11 +1,26 @@
-import React from "react";
-import { Check, Edit2, Trash, X } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Check,
+  Copy,
+  Edit2,
+  Trash2,
+  X,
+  ArrowLeft,
+  ExternalLink,
+  MousePointerClick,
+  Calendar,
+  Link2,
+  Globe,
+  AlertCircle,
+  Hash,
+} from "lucide-react";
 import {
   useLoaderData,
   redirect,
   Form,
   useActionData,
   useNavigation,
+  Link,
 } from "react-router";
 import { deleteUrl, editUrl, getOptionalUser, getUrl } from "./user-api";
 
@@ -57,124 +72,272 @@ export default function LinkDetailsPage() {
   const actionData = useActionData();
   const navigation = useNavigation();
 
-  const [openEdit, setOpenEdit] = React.useState(false);
-  const [isEditing, setIsEditing] = React.useState(false);
-
-  const [lastSavedUrl, setLastSavedUrl] = React.useState(url?.originalUrl);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [lastSavedUrl, setLastSavedUrl] = useState(url?.originalUrl);
 
   const isSubmitting = navigation.state === "submitting";
-
   const isDeleting =
     isSubmitting && navigation.formData?.get("intent") === "delete";
   const isUpdating =
     isSubmitting && navigation.formData?.get("intent") === "update";
 
-  // If the action succeeds, React Router re-runs the loader.
-  // When the component re-renders with the new URL, we catch it here and close the form.
+  // When data updates following a successful action loader re-fetch, reset the editing state
   if (url?.originalUrl !== lastSavedUrl) {
-    setLastSavedUrl(url?.originalUrl); // Update our tracker
-    setIsEditing(false); // Close the edit input
-    setOpenEdit(false); // Close the edit menu
+    setLastSavedUrl(url?.originalUrl);
+    setIsEditing(false);
+    setOpenEdit(false);
   }
 
   const normalDateTime = url?.createdAt
     ? new Intl.DateTimeFormat("en-US", {
-        dateStyle: "medium", // Gives you "Sep 17, 2026"
-        timeStyle: "short", // Gives you "10:32 AM"
+        dateStyle: "medium",
+        timeStyle: "short",
       }).format(new Date(url.createdAt))
-    : "";
+    : "Unknown date";
+
+  const fullShortUrl = `http://localhost:3000/${url?.shortenedUrl}`;
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(fullShortUrl);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
+  }
+
+  function toggleEditMode() {
+    if (openEdit || isEditing) {
+      setOpenEdit(false);
+      setIsEditing(false);
+    } else {
+      setOpenEdit(true);
+      setIsEditing(true);
+    }
+  }
 
   return (
-    <div className="stats-container">
-      <div className="buttons">
-        <button
-          disabled={isUpdating || isDeleting}
-          onClick={() => setOpenEdit(!openEdit)}
-        >
-          {openEdit ? <X size={14} /> : <Edit2 size={12} />}
-          {openEdit ? " Cancel" : " Edit"}
-        </button>
-        <Form method="post">
-          <input type="hidden" name="intent" value="delete" />
-          <input type="hidden" value={url?.shortID} name="id" />
-          <button disabled={isDeleting}>
-            <Trash size={13} /> Delete
-          </button>
-        </Form>
-      </div>
+    <div className="link-details-page-wrapper">
+      <div className="link-details-container">
+        {/* Navigation / Header */}
+        <div className="details-top-bar">
+          <Link to="/" className="back-link">
+            <ArrowLeft size={16} />
+            <span>Back to Links</span>
+          </Link>
 
-      <div className="stats">
-        <p style={{ fontStyle: "italic" }}>_id: {url?.shortID}</p>
-        <span>
-          <h4>Original Url: </h4>
-          {isEditing && openEdit ? (
-            <Form method="post">
-              <input type="hidden" name="intent" value="update" />
-              <input
-                type="hidden"
-                name="previousUrl"
-                value={url?.originalUrl}
-              />
-              <input
-                type="text"
-                name="originalUrl"
-                // disabled={isUpdating}
-                defaultValue={url?.originalUrl}
-              />
+          <div className="details-header-actions">
+            <button
+              type="button"
+              className={`btn-action-edit ${openEdit || isEditing ? "active" : ""}`}
+              disabled={isUpdating || isDeleting}
+              onClick={toggleEditMode}
+            >
+              {openEdit || isEditing ? <X size={15} /> : <Edit2 size={15} />}
+              <span>{openEdit || isEditing ? "Cancel Edit" : "Edit URL"}</span>
+            </button>
+
+            <Form
+              method="post"
+              onSubmit={(e) => {
+                if (
+                  !window.confirm(
+                    "Are you sure you want to delete this link? This action cannot be undone."
+                  )
+                ) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <input type="hidden" name="intent" value="delete" />
+              <input type="hidden" value={url?.shortID} name="id" />
               <button
                 type="submit"
-                disabled={isUpdating}
-                aria-label="Save changes"
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                disabled={isDeleting || isUpdating}
+                className="btn-action-delete"
               >
-                <Check size={18} color="green" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                aria-label="Cancel editing"
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                <X size={18} color="red" />
+                <Trash2 size={15} />
+                <span>{isDeleting ? "Deleting..." : "Delete Link"}</span>
               </button>
             </Form>
-          ) : (
-            <div className="originalurl-container">
-              <a href={`${url?.originalUrl}`}>{url?.originalUrl}</a>
-              {openEdit && (
-                <Edit2
-                  size={16}
-                  color="green"
-                  cursor={"pointer"}
-                  onClick={() => {
-                    setIsEditing(true);
-                  }}
-                />
+          </div>
+        </div>
+
+        {/* Main Details Card */}
+        <div className="details-main-card">
+          <div className="details-card-header">
+            <div className="details-title-group">
+              <div className="details-icon-badge">
+                <Link2 size={22} />
+              </div>
+              <div>
+                <h2>Link Details</h2>
+                <p className="details-subtitle">
+                  Manage and monitor your shortened link
+                </p>
+              </div>
+            </div>
+            <div className="details-id-tag">
+              <Hash size={13} />
+              <span>{url?.shortID}</span>
+            </div>
+          </div>
+
+          <div className="details-card-body">
+            {/* Shortened URL Section */}
+            <div className="details-section">
+              <label className="section-label">Shortened URL</label>
+              <div className="short-url-box">
+                <a
+                  href={fullShortUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="short-url-link"
+                >
+                  {fullShortUrl}
+                  <ExternalLink size={14} className="external-icon" />
+                </a>
+
+                <div className="short-url-actions">
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className={`btn-copy-link ${isCopied ? "copied" : ""}`}
+                  >
+                    {isCopied ? <Check size={15} /> : <Copy size={15} />}
+                    <span>{isCopied ? "Copied!" : "Copy Link"}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Original Destination URL Section */}
+            <div className="details-section">
+              <div className="destination-header">
+                <label className="section-label">Destination URL</label>
+                {!(openEdit || isEditing) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenEdit(true);
+                      setIsEditing(true);
+                    }}
+                    className="inline-edit-trigger"
+                  >
+                    <Edit2 size={13} />
+                    <span>Change destination</span>
+                  </button>
+                )}
+              </div>
+
+              {openEdit || isEditing ? (
+                <Form method="post" className="details-edit-form">
+                  <input type="hidden" name="intent" value="update" />
+                  <input
+                    type="hidden"
+                    name="previousUrl"
+                    value={url?.originalUrl}
+                  />
+
+                  <div className="edit-input-wrapper">
+                    <Globe size={18} className="input-globe-icon" />
+                    <input
+                      type="url"
+                      name="originalUrl"
+                      required
+                      defaultValue={url?.originalUrl}
+                      placeholder="https://example.com/your-target-url"
+                      className="details-edit-input"
+                      autoFocus
+                    />
+                  </div>
+
+                  {actionData?.message && (
+                    <div className="edit-error-banner">
+                      <AlertCircle size={15} />
+                      <span>{actionData?.message}</span>
+                    </div>
+                  )}
+
+                  <div className="edit-form-buttons">
+                    <button
+                      type="submit"
+                      disabled={isUpdating}
+                      className="btn-save-edit"
+                    >
+                      <Check size={15} />
+                      <span>{isUpdating ? "Saving..." : "Save Changes"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setOpenEdit(false);
+                      }}
+                      disabled={isUpdating}
+                      className="btn-cancel-edit"
+                    >
+                      <X size={15} />
+                      <span>Cancel</span>
+                    </button>
+                  </div>
+                </Form>
+              ) : (
+                <div className="destination-display-box">
+                  <Globe size={18} className="destination-globe-icon" />
+                  <a
+                    href={url?.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="original-url-link"
+                    title={url?.originalUrl}
+                  >
+                    {url?.originalUrl}
+                  </a>
+                  <a
+                    href={url?.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-visit-original"
+                    title="Open destination in new tab"
+                  >
+                    <ExternalLink size={15} />
+                  </a>
+                </div>
               )}
             </div>
-          )}
-        </span>
-        {actionData?.field && isEditing ? (
-          <p className="error-text">{actionData?.message}</p>
-        ) : null}
-        <span>
-          <h4>Shortened Url: </h4>
-          <a href={`http://localhost:3000/${url?.shortenedUrl}`}>
-            http://localhost:3000/{url?.shortenedUrl}
-          </a>
-        </span>
-        <h4>Clicks: {url?.urlClickCount}</h4>
-        <p style={{ fontStyle: "italic", color: "rgb(64, 64, 64)" }}>
-          Created on: {normalDateTime}
-        </p>
+
+            {/* Metrics & Metadata Grid */}
+            <div className="details-metrics-grid">
+              <div className="metric-card">
+                <div className="metric-icon-wrapper clicks">
+                  <MousePointerClick size={20} />
+                </div>
+                <div className="metric-info">
+                  <span className="metric-title">Total Clicks</span>
+                  <span className="metric-value">
+                    {url?.urlClickCount ?? 0}
+                  </span>
+                </div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-icon-wrapper calendar">
+                  <Calendar size={20} />
+                </div>
+                <div className="metric-info">
+                  <span className="metric-title">Created On</span>
+                  <span className="metric-value-text">{normalDateTime}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
