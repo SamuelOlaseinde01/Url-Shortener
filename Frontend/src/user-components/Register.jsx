@@ -1,5 +1,14 @@
-import React from "react";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  User,
+  Link2,
+  AlertCircle,
+  ArrowLeft,
+} from "lucide-react";
 import {
   Form,
   Link,
@@ -17,7 +26,8 @@ export async function action({ request }) {
     const email = formData.get("email");
     const password = formData.get("password");
     const cpassword = formData.get("cpassword");
-    if (password != cpassword) {
+
+    if (password !== cpassword) {
       const error = new Error("Passwords do not match.");
       error.field = "cpassword";
       throw error;
@@ -29,150 +39,231 @@ export async function action({ request }) {
       password,
     };
     await register(creds);
-    throw redirect("/login");
+    return redirect("/login");
   } catch (error) {
-    return error;
+    return {
+      message: error.message || "Registration failed",
+      field: error.field || "generic",
+    };
   }
 }
 
 export default function Register() {
   const data = useActionData();
   const navigation = useNavigation();
-  const [isOpen, setIsOpen] = React.useState(true);
-  const [isCpOpen, setIsCpOpen] = React.useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  function handleEyeOpen() {
-    setIsOpen(!isOpen);
-  }
-
-  function handleCpEyeOpen() {
-    setIsCpOpen(!isCpOpen);
-  }
+  const isSubmitting = navigation.state === "submitting";
+  const generalError =
+    data?.message && (data?.field === "generic" || !data?.field);
 
   return (
-    <div className="register-container">
-      <div className="register-form-container">
-        <h2>SIGN UP</h2>
-        <Form method="post">
-          <div className="input-error-container">
-            <div className="input-container">
-              <User fill="#000000" size={17} />
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                required
-              />
+    <div className="auth-page-wrapper">
+      <div className="auth-card-container">
+        {/* Brand & Logo */}
+        <div className="auth-brand-header">
+          <Link to="/" className="auth-brand-logo">
+            <div className="brand-icon-box">
+              <Link2 size={20} />
             </div>
-            {data?.message && data?.field === "firstName" && (
-              <p className="error-text">{data?.message}</p>
-            )}
+            <span>ClipLink</span>
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="auth-card">
+          <div className="auth-card-heading">
+            <h2>Create an account</h2>
+            <p>Get permanent links, custom aliases, and detailed analytics</p>
           </div>
-          <div className="input-error-container">
-            <div className="input-container">
-              <User size={17} fill="#000000" />
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                required
-              />
+
+          {generalError && (
+            <div className="auth-error-banner">
+              <AlertCircle size={16} />
+              <span>{data.message}</span>
             </div>
-            {data?.message && data?.field === "lastName" && (
-              <p className="error-text">{data?.message}</p>
-            )}
-          </div>
-          <div className="input-error-container">
-            <div className="input-container">
-              <Mail size={17} />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                required
-              />
-            </div>
-            {data?.message && data?.field === "email" && (
-              <p className="error-text">{data?.message}</p>
-            )}
-          </div>
-          <div className="input-error-container">
-            <div className="input-container">
-              <div className="lock">
-                <Lock size={17} />
-              </div>
-              <input
-                type={isOpen ? "password" : "text"}
-                name="password"
-                placeholder="Password"
-                required
-              />
-              <div className="eye">
-                {isOpen ? (
-                  <EyeOff
-                    size={17}
-                    cursor={"pointer"}
-                    onClick={handleEyeOpen}
+          )}
+
+          <Form method="post" className="auth-form">
+            <div className="auth-name-grid">
+              <div className="auth-field-group">
+                <label className="auth-label" htmlFor="firstName">
+                  First Name
+                </label>
+                <div
+                  className={`auth-input-wrapper ${
+                    data?.field === "firstName" ? "has-error" : ""
+                  }`}
+                >
+                  <User size={18} className="auth-input-icon" />
+                  <input
+                    id="firstName"
+                    type="text"
+                    name="firstName"
+                    placeholder="Jane"
+                    required
+                    autoComplete="given-name"
+                    className="auth-input"
                   />
-                ) : (
-                  <Eye size={17} cursor={"pointer"} onClick={handleEyeOpen} />
+                </div>
+                {data?.message && data?.field === "firstName" && (
+                  <p className="auth-field-error">{data.message}</p>
+                )}
+              </div>
+
+              <div className="auth-field-group">
+                <label className="auth-label" htmlFor="lastName">
+                  Last Name
+                </label>
+                <div
+                  className={`auth-input-wrapper ${
+                    data?.field === "lastName" ? "has-error" : ""
+                  }`}
+                >
+                  <User size={18} className="auth-input-icon" />
+                  <input
+                    id="lastName"
+                    type="text"
+                    name="lastName"
+                    placeholder="Doe"
+                    required
+                    autoComplete="family-name"
+                    className="auth-input"
+                  />
+                </div>
+                {data?.message && data?.field === "lastName" && (
+                  <p className="auth-field-error">{data.message}</p>
                 )}
               </div>
             </div>
-            {data?.message && data?.field === "password" && (
-              <p className="error-text">{data?.message}</p>
-            )}
-          </div>
-          <div className="input-error-container">
-            <div className="input-container">
-              <div className="lock">
-                <Lock size={17} />
-              </div>
-              <input
-                type={isCpOpen ? "password" : "text"}
-                name="cpassword"
-                placeholder="Confirm Password"
-                required
-              />
-              <div className="eye">
-                {isCpOpen ? (
-                  <EyeOff
-                    size={17}
-                    cursor={"pointer"}
-                    onClick={handleCpEyeOpen}
-                  />
-                ) : (
-                  <Eye size={17} cursor={"pointer"} onClick={handleCpEyeOpen} />
-                )}
-              </div>
-            </div>
-            {data?.message && data?.field === "cpassword" && (
-              <p className="error-text">{data?.message}</p>
-            )}
-            {data?.message && !data?.field === "cpassword" && (
-              <p
-                className={
-                  data?.message === "Failed to fetch"
-                    ? "error-text"
-                    : "success-text"
-                }
+
+            <div className="auth-field-group">
+              <label className="auth-label" htmlFor="email">
+                Email Address
+              </label>
+              <div
+                className={`auth-input-wrapper ${
+                  data?.field === "email" ? "has-error" : ""
+                }`}
               >
-                {data?.message}
-              </p>
-            )}
+                <Mail size={18} className="auth-input-icon" />
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="name@example.com"
+                  required
+                  autoComplete="email"
+                  className="auth-input"
+                />
+              </div>
+              {data?.message && data?.field === "email" && (
+                <p className="auth-field-error">{data.message}</p>
+              )}
+            </div>
+
+            <div className="auth-field-group">
+              <label className="auth-label" htmlFor="password">
+                Password
+              </label>
+              <div
+                className={`auth-input-wrapper ${
+                  data?.field === "password" ? "has-error" : ""
+                }`}
+              >
+                <Lock size={18} className="auth-input-icon" />
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Create a strong password (min 8 chars)"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="auth-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="auth-eye-btn"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {data?.message && data?.field === "password" && (
+                <p className="auth-field-error">{data.message}</p>
+              )}
+            </div>
+
+            <div className="auth-field-group">
+              <label className="auth-label" htmlFor="cpassword">
+                Confirm Password
+              </label>
+              <div
+                className={`auth-input-wrapper ${
+                  data?.field === "cpassword" ? "has-error" : ""
+                }`}
+              >
+                <Lock size={18} className="auth-input-icon" />
+                <input
+                  id="cpassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="cpassword"
+                  placeholder="Confirm your password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="auth-input"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
+                  className="auth-eye-btn"
+                  title={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+              {data?.message && data?.field === "cpassword" && (
+                <p className="auth-field-error">{data.message}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="auth-primary-btn"
+            >
+              {isSubmitting ? "Creating Account..." : "Create Account"}
+            </button>
+          </Form>
+
+          <div className="auth-card-footer">
+            <p>
+              Already have an account?{" "}
+              <Link to="/login" className="auth-link">
+                Sign in
+              </Link>
+            </p>
           </div>
-          <button
-            disabled={navigation.state === "submitting"}
-            className={
-              navigation.state === "submitting"
-                ? "auth-submitting-btn"
-                : "auth-submit-btn"
-            }
-          >
-            {navigation.state === "submitting" ? "SIGNING UP" : "SIGN UP"}
-          </button>
-        </Form>
-        <Link to={"/login"}>Already have an account? Login here</Link>
+        </div>
+
+        <div className="auth-bottom-nav">
+          <Link to="/" className="auth-back-link">
+            <ArrowLeft size={14} />
+            <span>Return to Homepage</span>
+          </Link>
+        </div>
       </div>
     </div>
   );
